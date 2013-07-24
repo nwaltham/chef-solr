@@ -26,3 +26,4 @@ set[:solr][:lib]               = node.solr.home + "/lib"
 default[:solr][:data]          = "#{node.jetty.home}/webapps/#{node.solr.context_path}/data"
 default[:solr][:custom_config] = nil
 default[:solr][:custom_lib]    = nil
+default[:solr][:sl4j]          = true

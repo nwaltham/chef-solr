@@ -118,5 +118,14 @@ remote_directory "/etc/solr/conf" do
   not_if       "test -e #{node.solr.custom_config}/solrconfig.xml"
 end
 
+# If Solr version >= 4.3.0 and SL4j should be used, copy JARs from extracted solr into Jetty lib/ext directory and restart
 
+bash "Copying Jars from extracted Solr #{node[:solr][:extracted]}/example/lib/ext into Jetty lib #{node[:jetty][:home]}/lib/ext" do
+  only_if { node.default[:solr][:sl4j] and solr_version[:major] >= 4 and solr_version[:minor] >= 3 }
+  user node.jetty.user
+  code %Q{
+    cp #{node[:solr][:extracted]}/example/lib/ext/* #{node[:jetty][:home]}/lib/ext
+  }
+  notifies :restart, resources(:service => "jetty"), :immediately
+end
 
