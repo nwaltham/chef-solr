@@ -1,3 +1,7 @@
+# Returns a hash with keys representing the major, minor, and tiny
+# version of Solr running on the node
+#
+# Returns hash
 def solr_version
   split_version = node[:solr][:version].split('.')
   {
