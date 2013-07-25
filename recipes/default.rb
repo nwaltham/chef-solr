@@ -120,12 +120,13 @@ end
 
 # If Solr version >= 4.3.0 and SL4j should be used, copy JARs from extracted solr into Jetty lib/ext directory and restart
 
-bash "Copying Jars from extracted Solr #{node[:solr][:extracted]}/example/lib/ext into Jetty lib #{node[:jetty][:home]}/lib/ext" do
+bash "Copying Jars from extracted Solr #{node[:solr][:extracted]}/example/lib/ext into Jetty lib #{node[:jetty][:home]}/lib/ext using solr version #{node[:solr][:version]}" do
   only_if { node.default[:solr][:sl4j] and solr_version[:major] >= 4 and solr_version[:minor] >= 3 }
-  user node.jetty.user
+  user 'root'
+  group 'root'
   code %Q{
     cp #{node[:solr][:extracted]}/example/lib/ext/* #{node[:jetty][:home]}/lib/ext
   }
-  notifies :restart, resources(:service => "jetty"), :immediately
+  notifies :restart, resources(:service => "jetty")
 end
 
