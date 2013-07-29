@@ -2,7 +2,7 @@ include_attribute "tomcat"
 
 expand!
 
-default[:solr][:version]   = "3.6.1"
+default[:solr][:version]   = "4.4.0"
 default[:solr][:directory] = "/usr/local/src"
 default[:solr][:checksum]  = "1b4552ba95c8456d4fbd596e82028eaa0619b6942786e98e1c4c31258543c708" #sha265
 

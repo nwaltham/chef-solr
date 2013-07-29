@@ -32,8 +32,8 @@ bash 'unpack solr' do
 end
 
 bash 'install solr into tomcat' do
-  code   "cp #{node.solr.war} #{node.tomcat.home}/webapps/solr.war"
-  not_if "test `sha256sum #{node.tomcat.home}/webapps/solr.war | cut -d ' ' -f 1` = `sha256sum #{node.solr.war} | cut -d ' ' -f 1`"
+  code   "cp #{node.solr.war} #{node.tomcat.webapp_dir}/solr.war"
+  not_if "test `sha256sum #{node.tomcat.webapp_dir}/solr.war | cut -d ' ' -f 1` = `sha256sum #{node.solr.war} | cut -d ' ' -f 1`"
   notifies :restart, resources(:service => "tomcat")
 end
 
@@ -44,7 +44,7 @@ directory node.solr.data do
   mode      "750"
 end
 
-template "#{node.tomcat.home}/contexts/solr.xml" do
+template "#{node.tomcat.config_dir}/Catalina/localhost/solr.xml" do
   owner  node.tomcat.user
   source "solr.context.erb"
   notifies :restart, resources(:service => "tomcat")
