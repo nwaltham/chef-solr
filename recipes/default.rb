@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-include_recipe "jetty"
+include_recipe "tomcat"
 
 remote_file node.solr.download do
   source   node.solr.link
@@ -31,36 +31,36 @@ bash 'unpack solr' do
   not_if "test -d #{node.solr.extracted}"
 end
 
-bash 'install solr into jetty' do
-  code   "cp #{node.solr.war} #{node.jetty.home}/webapps/solr.war"
-  not_if "test `sha256sum #{node.jetty.home}/webapps/solr.war | cut -d ' ' -f 1` = `sha256sum #{node.solr.war} | cut -d ' ' -f 1`"
-  notifies :restart, resources(:service => "jetty")
+bash 'install solr into tomcat' do
+  code   "cp #{node.solr.war} #{node.tomcat.home}/webapps/solr.war"
+  not_if "test `sha256sum #{node.tomcat.home}/webapps/solr.war | cut -d ' ' -f 1` = `sha256sum #{node.solr.war} | cut -d ' ' -f 1`"
+  notifies :restart, resources(:service => "tomcat")
 end
 
 directory node.solr.data do
-  owner     node.jetty.user
-  group     node.jetty.group
+  owner     node.tomcat.user
+  group     node.tomcat.group
   recursive true
   mode      "750"
 end
 
-template "#{node.jetty.home}/contexts/solr.xml" do
-  owner  node.jetty.user
+template "#{node.tomcat.home}/contexts/solr.xml" do
+  owner  node.tomcat.user
   source "solr.context.erb"
-  notifies :restart, resources(:service => "jetty")
+  notifies :restart, resources(:service => "tomcat")
 end
 
 remote_directory node.solr.config do
   source       "sunspot-1.2.1"
-  owner        node.jetty.user
-  group        node.jetty.group
-  files_owner  node.jetty.user
-  files_group  node.jetty.group
+  owner        node.tomcat.user
+  group        node.tomcat.group
+  files_owner  node.tomcat.user
+  files_group  node.tomcat.group
   files_backup 0
   files_mode   "644"
   purge        true
 
-  notifies     :restart, resources(:service => "jetty"), :immediately
+  notifies     :restart, resources(:service => "tomcat"), :immediately
   not_if       { File.exists? node.solr.config }
 end
 
@@ -71,11 +71,11 @@ if node.solr.custom_lib
     code <<-EOH
       rm -rf #{node.solr.lib}
       cp -r #{node.solr.custom_lib} #{node.solr.lib}
-      chown -R #{node.jetty.user}:#{node.jetty.group} #{node.solr.lib}
+      chown -R #{node.tomcat.user}:#{node.tomcat.group} #{node.solr.lib}
       find #{node.solr.lib} -type f -exec chmod 640 \\;
       find #{node.solr.lib} -type d -exec chmod 750 \\;
     EOH
-    notifies     :restart, resources(:service => "jetty"), :immediately
+    notifies     :restart, resources(:service => "tomcat"), :immediately
     # Only copy the lib if it exists, and it is different from what is already there
     only_if <<-EOH
       test -e #{node.solr.custom_lib} &&
@@ -91,11 +91,11 @@ if node.solr.custom_config
     code <<-EOH
       rm -rf #{node.solr.config}
       cp -r #{node.solr.custom_config} #{node.solr.config}
-      chown -R #{node.jetty.user}:#{node.jetty.group} #{node.solr.config}
+      chown -R #{node.tomcat.user}:#{node.tomcat.group} #{node.solr.config}
       find #{node.solr.config} -type f -exec chmod 640 \\;
       find #{node.solr.config} -type d -exec chmod 750 \\;
     EOH
-    notifies     :restart, resources(:service => "jetty"), :immediately
+    notifies     :restart, resources(:service => "tomcat"), :immediately
     # Only copy the config if it exists, and it is different from what is already there
     only_if <<-EOH
       test -e #{node.solr.custom_config}/solrconfig.xml &&
@@ -107,14 +107,14 @@ end
 
 remote_directory "/etc/solr/conf" do
   source       "sunspot-1.2.1"
-  owner        node.jetty.user
-  group        node.jetty.group
-  files_owner  node.jetty.user
-  files_group  node.jetty.group
+  owner        node.tomcat.user
+  group        node.tomcat.group
+  files_owner  node.tomcat.user
+  files_group  node.tomcat.group
   files_backup 0
   files_mode   "644"
   purge        true
-  notifies     :restart, resources(:service => "jetty")
+  notifies     :restart, resources(:service => "tomcat")
   not_if       "test -e #{node.solr.custom_config}/solrconfig.xml"
 end
 
