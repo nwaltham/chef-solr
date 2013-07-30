@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: solr
+# Cookbook Name:: solr-tomcat
 # Recipe:: default
 #
 # Copyright 2010, Jiva Technology Ltd.
@@ -95,6 +95,11 @@ remote_directory node.solr.home do
   not_if       { File.exists? node.solr.config }
 end
 
+cookbook_file "#{node.solr.home}/collection1/conf/schema.xml" do
+  backup true
+  source "example-nutch/schema-solr4.xml"
+  notifies     :restart, resources(:service => "tomcat"), :immediately
+end
 
 if node.solr.custom_lib
 
@@ -135,18 +140,4 @@ if node.solr.custom_config
   end
 
 end
-
-#remote_directory "/etc/solr/conf" do
-#  source       "sunspot-1.2.1"
-#  owner        node.tomcat.user
-#  group        node.tomcat.group
-#  files_owner  node.tomcat.user
-#  files_group  node.tomcat.group
-#  files_backup 0
-#  files_mode   "644"
-#  purge        true
-#  notifies     :restart, resources(:service => "tomcat")
-#  not_if       "test -e #{node.solr.custom_config}/solrconfig.xml"
-#end
-
 
