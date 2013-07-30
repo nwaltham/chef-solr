@@ -349,6 +349,10 @@
 
     <!-- fields for tld plugin -->    
     <field name="tld" type="string" stored="false" indexed="false"/>
+    
+    <!-- for versioning-->
+    
+    <field name="_version_" type="long" indexed="true" stored="true"/>    
  </fields>
  <uniqueKey>id</uniqueKey>
  <defaultSearchField>text</defaultSearchField>
