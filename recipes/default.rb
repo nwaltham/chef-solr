@@ -31,11 +31,11 @@ bash 'unpack solr' do
   not_if "test -d #{node.solr.extracted}"
 end
 
-bash 'install solr into tomcat' do
-  code   "cp #{node.solr.war} #{node.tomcat.webapp_dir}/solr.war"
-  not_if "test `sha256sum #{node.tomcat.webapp_dir}/solr.war | cut -d ' ' -f 1` = `sha256sum #{node.solr.war} | cut -d ' ' -f 1`"
-  notifies :restart, resources(:service => "tomcat")
-end
+# bash 'install solr into tomcat' do
+#  code   "cp #{node.solr.war} #{node.tomcat.webapp_dir}/solr.war"
+#  not_if "test `sha256sum #{node.tomcat.webapp_dir}/solr.war | cut -d ' ' -f 1` = `sha256sum #{node.solr.war} | cut -d ' ' -f 1`"
+#  notifies :restart, resources(:service => "tomcat")
+# end
 
 bash 'install logging into tomcat (log4j-1.2.16.jar)' do
   code   "cp #{node.solr.extracted}/example/lib/ext/log4j-1.2.16.jar #{node.tomcat.endorsed_dir}/log4j-1.2.16.jar"
