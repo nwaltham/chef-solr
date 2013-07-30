@@ -81,8 +81,8 @@ template "#{node.tomcat.context_dir}/solr.xml" do
   notifies :restart, resources(:service => "tomcat")
 end
 
-remote_directory node.solr.config do
-  source       "sunspot-1.2.1"
+remote_directory node.solr.home do
+  source       "example-solr"
   owner        node.tomcat.user
   group        node.tomcat.group
   files_owner  node.tomcat.user
@@ -136,17 +136,17 @@ if node.solr.custom_config
 
 end
 
-remote_directory "/etc/solr/conf" do
-  source       "sunspot-1.2.1"
-  owner        node.tomcat.user
-  group        node.tomcat.group
-  files_owner  node.tomcat.user
-  files_group  node.tomcat.group
-  files_backup 0
-  files_mode   "644"
-  purge        true
-  notifies     :restart, resources(:service => "tomcat")
-  not_if       "test -e #{node.solr.custom_config}/solrconfig.xml"
-end
+#remote_directory "/etc/solr/conf" do
+#  source       "sunspot-1.2.1"
+#  owner        node.tomcat.user
+#  group        node.tomcat.group
+#  files_owner  node.tomcat.user
+#  files_group  node.tomcat.group
+#  files_backup 0
+#  files_mode   "644"
+#  purge        true
+#  notifies     :restart, resources(:service => "tomcat")
+#  not_if       "test -e #{node.solr.custom_config}/solrconfig.xml"
+#end
 
 
