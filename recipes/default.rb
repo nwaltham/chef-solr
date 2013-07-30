@@ -96,7 +96,7 @@ remote_directory node.solr.home do
 end
 
 cookbook_file "#{node.solr.home}/collection1/conf/schema.xml" do
-  backup true
+  backup 5
   source "example-nutch/schema-solr4.xml"
   notifies     :restart, resources(:service => "tomcat"), :immediately
 end
