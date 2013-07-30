@@ -62,8 +62,8 @@ bash 'install logging into tomcat (jul-to-slf4j-1.6.6.jar)' do
 end
 
 bash 'install logging into tomcat (log4j.properties)' do
-  code   "cp #{node.solr.extracted}/example/resources/log4j.properties #{node.tomcat.endorsed_dir}/log4j.properties"
-  not_if "test `sha256sum #{node.tomcat.endorsed_dir}/log4j.properties | cut -d ' ' -f 1` = `sha256sum cp #{node.solr.extracted}/example/resources/log4j.properties | cut -d ' ' -f 1`"
+  code   "cp #{node.solr.extracted}/example/resources/log4j.properties #{node.tomcat.base}/common/classes/log4j.properties"
+  not_if "test `sha256sum #{node.tomcat.base}/common/classes/log4j.properties | cut -d ' ' -f 1` = `sha256sum cp #{node.solr.extracted}/example/resources/log4j.properties | cut -d ' ' -f 1`"
   notifies :restart, resources(:service => "tomcat")
 end
 
@@ -75,7 +75,7 @@ directory node.solr.data do
   mode      "750"
 end
 
-template "#{node.tomcat.config_dir}/Catalina/localhost/solr.xml" do
+template "#{node.tomcat.context_dir}/solr.xml" do
   owner  node.tomcat.user
   source "solr.context.erb"
   notifies :restart, resources(:service => "tomcat")
