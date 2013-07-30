@@ -37,6 +37,37 @@ bash 'install solr into tomcat' do
   notifies :restart, resources(:service => "tomcat")
 end
 
+bash 'install logging into tomcat (log4j-1.2.16.jar)' do
+  code   "cp #{node.solr.extracted}/example/lib/ext/log4j-1.2.16.jar #{node.tomcat.endorsed_dir}/log4j-1.2.16.jar"
+  not_if "test `sha256sum #{node.tomcat.endorsed_dir}/log4j-1.2.16.jar | cut -d ' ' -f 1` = `sha256sum cp #{node.solr.extracted}/example/lib/ext/log4j-1.2.16.jar | cut -d ' ' -f 1`"
+  notifies :restart, resources(:service => "tomcat")
+end
+
+bash 'install logging into tomcat (slf4j-api-1.6.6.jar)' do
+  code   "cp #{node.solr.extracted}/example/lib/ext/slf4j-api-1.6.6.jar #{node.tomcat.endorsed_dir}/slf4j-api-1.6.6.jar"
+  not_if "test `sha256sum #{node.tomcat.endorsed_dir}/slf4j-api-1.6.6.jar | cut -d ' ' -f 1` = `sha256sum cp #{node.solr.extracted}/example/lib/ext/slf4j-api-1.6.6.jar | cut -d ' ' -f 1`"
+  notifies :restart, resources(:service => "tomcat")
+end
+
+bash 'install logging into tomcat (slf4j-log4j12-1.6.6.jar)' do
+  code   "cp #{node.solr.extracted}/example/lib/ext/slf4j-log4j12-1.6.6.jar #{node.tomcat.endorsed_dir}/slf4j-log4j12-1.6.6.jar"
+  not_if "test `sha256sum #{node.tomcat.endorsed_dir}/slf4j-log4j12-1.6.6.jar | cut -d ' ' -f 1` = `sha256sum cp #{node.solr.extracted}/example/lib/ext/slf4j-log4j12-1.6.6.jar | cut -d ' ' -f 1`"
+  notifies :restart, resources(:service => "tomcat")
+end
+
+bash 'install logging into tomcat (jcl-over-slf4j-1.6.6.jar)' do
+  code   "cp #{node.solr.extracted}/example/lib/ext/jcl-over-slf4j-1.6.6.jar #{node.tomcat.endorsed_dir}/jcl-over-slf4j-1.6.6.jar"
+  not_if "test `sha256sum #{node.tomcat.endorsed_dir}/jcl-over-slf4j-1.6.6.jar | cut -d ' ' -f 1` = `sha256sum cp #{node.solr.extracted}/example/lib/ext/jcl-over-slf4j-1.6.6.jar | cut -d ' ' -f 1`"
+  notifies :restart, resources(:service => "tomcat")
+end
+
+bash 'install logging into tomcat (jul-to-slf4j-1.6.6.jar)' do
+  code   "cp #{node.solr.extracted}/example/lib/ext/jul-to-slf4j-1.6.6.jar #{node.tomcat.endorsed_dir}/jul-to-slf4j-1.6.6.jar"
+  not_if "test `sha256sum #{node.tomcat.endorsed_dir}/jul-to-slf4j-1.6.6.jar | cut -d ' ' -f 1` = `sha256sum cp #{node.solr.extracted}/example/lib/ext/jul-to-slf4j-1.6.6.jar | cut -d ' ' -f 1`"
+  notifies :restart, resources(:service => "tomcat")
+end
+
+
 directory node.solr.data do
   owner     node.tomcat.user
   group     node.tomcat.group
@@ -117,6 +148,5 @@ remote_directory "/etc/solr/conf" do
   notifies     :restart, resources(:service => "tomcat")
   not_if       "test -e #{node.solr.custom_config}/solrconfig.xml"
 end
-
 
 
