@@ -100,7 +100,7 @@
        configuration.
     -->
   <!--<dataDir>${solr.data.dir:}</dataDir> -->
-  <dataDir><%= node.solr.home %></dataDir>
+  <dataDir><%= node.solr.data %></dataDir>
 
 
   <!-- The DirectoryFactory to use for indexes.
@@ -150,7 +150,7 @@
        When ManagedIndexSchemaFactory is specified with mutable = true, schema
        modification REST API calls will be allowed; otherwise, error responses will be
        sent back for these requests. 
-  -->
+  -->'/etc/solr/collection1/conf/
   <schemaFactory class="ClassicIndexSchemaFactory"/>
 
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
