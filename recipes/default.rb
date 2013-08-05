@@ -81,11 +81,6 @@ template "#{node.tomcat.context_dir}/solr.xml" do
   notifies :restart, resources(:service => "tomcat")
 end
 
-template "#{node.solr.home}/collection1/conf/solrconfig.xml" do
-  owner  node.tomcat.user
-  source "solrconfig.xml.erb"
-  notifies :restart, resources(:service => "tomcat")
-end
 remote_directory node.solr.home do
   source       "example-solr"
   owner        node.tomcat.user
@@ -99,6 +94,13 @@ remote_directory node.solr.home do
   notifies     :restart, resources(:service => "tomcat"), :immediately
   not_if       { File.exists? node.solr.config }
 end
+
+template "#{node.solr.home}/collection1/conf/solrconfig.xml" do
+  owner  node.tomcat.user
+  source "solrconfig.xml.erb"
+  notifies :restart, resources(:service => "tomcat")
+end
+
 
 cookbook_file "#{node.solr.home}/collection1/conf/schema.xml" do
   backup 5
